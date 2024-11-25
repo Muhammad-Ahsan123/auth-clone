@@ -1,21 +1,28 @@
-// import jwt from "jsonwebtoken"
 import axios from 'axios';
-
-// import * as jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 axios.defaults.baseURL = import.meta.env.VITE_SERVER_DOMAIN
 
 
+// export async function getUsername() {
+//     const token = localStorage.getItem('token')
+//     const decodeToken = jwtDecode(token)
+//     console.log('Token', decodeToken);
+//     return decodeToken;  // Or specific data like decoded.username
+// }
 export async function getUsername() {
-    const token = localStorage.getItem('token')
-
-    console.log(import.meta.env);
+    const token = localStorage.getItem('token');
+    if (!token || typeof token !== 'string') {
+        console.log('Token is missing or invalid');
+        return null;  // Return null or handle this case in a different way
+    }
 
     try {
-        // let decoded = jwt.verify(token, import.meta.env.JWT_KEY)  // Call the function directly
-        // console.log(decoded);
-        // return decoded;  // Or specific data like decoded.username
+        const decodeToken = jwtDecode(token);  // Decode token
+        console.log('Decoded Token:', decodeToken);  // Check the decoded token here
+        return decodeToken;
     } catch (error) {
-        console.error('Error decoding token:', error);
+        console.log('Error decoding token:', error);
+        return null;
     }
 }
 
@@ -87,7 +94,7 @@ export async function updateUser(response) {
 }
 
 /** generate OTP */
-export async function generateOTP(username) {
+export async function generateOTP(username, userEmail) {
     try {
         const { data: { code }, status } = await axios.get('/api/generateOTP', { params: { username } });
 
@@ -95,7 +102,7 @@ export async function generateOTP(username) {
         if (status === 201) {
             let { data: { email } } = await getUser({ username });
             let text = `Your Password Recovery OTP is ${code}. Verify and recover your password.`;
-            await axios.post('/api/registerMail', { username, userEmail: email, text, subject: "Password Recovery OTP" })
+            await axios.post('/api/registerEmail', { username, userEmail, text, subject: "Password Recovery OTP" })
         }
         return Promise.resolve(code);
     } catch (error) {
@@ -116,7 +123,6 @@ export async function verifyOTP({ username, code }) {
 /** reset password */
 export async function resetPassword({ username, password }) {
     try {
-
         console.log('Ha bhai reset ho raha hai');
 
         const { data, status } = await axios.put('/api/resetPassword', { username, password });
@@ -125,4 +131,3 @@ export async function resetPassword({ username, password }) {
         return Promise.reject({ error })
     }
 }
-

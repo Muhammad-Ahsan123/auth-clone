@@ -39,19 +39,18 @@ export default function Register() {
         }
     })
 
-    /** formik doensn't support file upload so we need to create this handler */
     const onUpload = async e => {
         const base64 = await convertToBase64(e.target.files[0]);
         setFile(base64);
     }
 
     return (
-        <div className="container mx-auto relative top-1/2 transform -translate-y-1/2">
+        <div className="container mx-auto relative top-1/2 transform -translate-y-1/2 ">
 
             <Toaster position='top-center' reverseOrder={false}></Toaster>
 
-            <div className='flex justify-center items-center h-screen'>
-                <div className={`${styles.glass}  h-[93vh]`} style={{ width: "50%", paddingTop: '1em' }}>
+            <div className='flex justify-center items-center h-screen py-16'>
+                <div className={`${styles.register} h-[90vh] `} style={{ width: "80%", paddingTop: '1em' , border : '1px solid black' }}>
 
                     <div className="title flex flex-col items-center">
                         <h4 className='text-5xl font-bold'>Register</h4>

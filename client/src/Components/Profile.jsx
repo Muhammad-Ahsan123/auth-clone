@@ -15,27 +15,54 @@ import { useAuthStore } from '../store/store';
 export default function Profile() {
 
     const [file, setFile] = useState();
-    const { username } = useAuthStore(state => state.auth)
-    const [{ isLoading, apiData, serverError }] = useFetch(`/user/${username}`);  // Correct query format
+    // const { username } = useAuthStore(state => state.auth);
+    const [{ isLoading, apiData, serverError, status }] = useFetch();
+    // Correct query format
 
-    console.log('API DATA', apiData);
+    // console.log('API API API', apiData);
+    // console.log('API DATA', apiData);
     const navigate = useNavigate()
-    // console.log('API DATA FROM PROFILE PAGE', apiData);
 
 
-    useEffect(() => {
-        const fetchToken = async () => {
-            try {
-                const token = await getUsername();
-                console.log('Token:', token); // Log the token
-            } catch (error) {
-                console.error('Error fetching token:', error);
-            }
-        };
-        fetchToken();
-    }, []);
+    // useEffect(() => {
+    //     const fetchToken = async () => {
+    //         try {
+    //             const token = await getUsername(`/api/{apiData.username}`);
+    //             console.log('Token:', token); // Log the token
+    //         } catch (error) {
+    //             console.error('Error fetching token:', error);
+    //         }
+    //     };
+    //     fetchToken();
+    // }, []);
 
+    // const formik = useFormik({
+    //     initialValues: {
+    //         firstName: apiData?.msg?.username || '',
+    //         lastName: apiData?.msg?.lastName || '',
+    //         email: apiData?.msg?.email || '',
+    //         mobile: apiData?.msg?.mobile || '',
+    //         address: apiData?.msg?.address || ''
+    //     },
+    //     enableReinitialize: true,
+    //     validate: profileValidation,
+    //     validateOnBlur: false,
+    //     validateOnChange: false,
+    //     onSubmit: async values => {
+    //         values = await Object.assign(values, { profile: file || apiData?.msg.profile || '' })
+    //         let updatePromise = updateUser(values);
+
+    //         toast.promise(updatePromise, {
+    //             loading: 'Updating...',
+    //             success: <b>Update Successfully...!</b>,
+    //             error: <b>Could not Update!</b>
+    //         });
+    //         console.log('value of profile page', values);
+
+    //     }
+    // })
     const formik = useFormik({
+        enableReinitialize: true, // This allows `formik` to reinitialize with new `apiData`
         initialValues: {
             firstName: apiData?.msg?.username || '',
             lastName: apiData?.msg?.lastName || '',
@@ -43,23 +70,23 @@ export default function Profile() {
             mobile: apiData?.msg?.mobile || '',
             address: apiData?.msg?.address || ''
         },
-        enableReinitialize: true,
         validate: profileValidation,
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
-            values = await Object.assign(values, { profile: file || apiData?.msg.profile || '' })
-            let updatePromise = updateUser(values);
+            values = Object.assign(values, { profile: file || apiData?.msg?.profile || '' });
+
+            const updatePromise = updateUser(values);
 
             toast.promise(updatePromise, {
                 loading: 'Updating...',
                 success: <b>Update Successfully...!</b>,
-                error: <b>Could not Update!</b>
+                error: <b>Could not Update!</b>,
             });
-            console.log('value of profile page', values);
 
+            console.log('Profile form values:', values);
         }
-    })
+    });
 
 
     /** formik doensn't support file upload so we need to create this handler */
@@ -70,7 +97,10 @@ export default function Profile() {
 
     // logout handler function
     function userLogout() {
-        localStorage.removeItem('token');
+        
+        // localStorage.clear('username');
+
+        localStorage.clear();
         navigate('/')
     }
 

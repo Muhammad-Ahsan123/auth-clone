@@ -8,13 +8,18 @@ import Recovery from './Components/Recovery'
 import PageNotFound from './Components/PageNotFound'
 import Reset from './Components/Reset'
 import Profile from './Components/Profile'
+import { Authorization, AuthorizationForLoginPage, AuthorizationForPasswordPage } from './middleware/auth.jsx'
 
 
 // Root Router
 const routes = createBrowserRouter([
   {
     path: '/',
-    element: <Username />,
+    element:
+      <AuthorizationForLoginPage>
+        <Username />
+      </AuthorizationForLoginPage>
+    ,
   },
   {
     path: '/register',
@@ -22,7 +27,10 @@ const routes = createBrowserRouter([
   },
   {
     path: '/password',
-    element: <Password />,
+    element:
+      <AuthorizationForPasswordPage>
+        <Password />
+      </AuthorizationForPasswordPage>
   },
   {
     path: '/recovery',
@@ -30,7 +38,9 @@ const routes = createBrowserRouter([
   },
   {
     path: '/profile',
-    element: <Profile />,
+    element: <Authorization>
+      <Profile />
+    </Authorization >,
   },
   {
     path: '/reset',

@@ -26,7 +26,7 @@ export default function Username() {
         validateOnChange: false,
         onSubmit: async values => {
             console.log(values);
-
+            localStorage.setItem('username' , values.username)
             setUsername(values.username);
             navigate('/password')
         }
@@ -54,7 +54,7 @@ export default function Username() {
 
                         <div className="textbox flex flex-col items-center gap-6">
                             <input {...formik.getFieldProps('username')} className={styles.textbox} type="text" placeholder='Username' />
-                            <button className={styles.btn} type='submit'>Let's Go</button>
+                            <button className={styles.btn} type='submit'>Login Button</button>
                         </div>
 
                         <div className="text-center py-4">
